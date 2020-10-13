@@ -1,16 +1,19 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">不拿钱就拿命购物站</div></nav-bar>
-    <home-swiper :banners="banners"></home-swiper>
-    <home-recommend-view :recommend="recommends"></home-recommend-view>
-    <feature-view></feature-view>
-    <tab-control :titles="['流行','新款','精选']" @tabClick="tabClick"></tab-control>
-    <goods-list :goods="showGoods"></goods-list>
+    <scroll id="homeView">
+      <home-swiper :banners="banners"></home-swiper>
+      <home-recommend-view :recommend="recommends"></home-recommend-view>
+      <feature-view></feature-view>
+      <tab-control :titles="['流行','新款','精选']" @tabClick="tabClick"></tab-control>
+      <goods-list :goods="showGoods"></goods-list>
+    </scroll>
   </div>
 </template>
 
 <script>
 import NavBar from 'components/common/navbar/NavBar';
+import Scroll from '@/components/common/scroll/scroll';
 import TabControl from "@/components/content/tabControl/TabControl";
 import GoodsList from "@/components/content/goods/GoodsList";
 
@@ -24,6 +27,7 @@ export default {
   name: "Home",
   components: {
     NavBar,
+    Scroll,
     TabControl,
     FeatureView,
     HomeSwiper,
@@ -93,6 +97,7 @@ export default {
 <style scoped>
   #home {
     padding-top: 44px;
+    position: relative;
   }
 
   .home-nav {
@@ -104,5 +109,13 @@ export default {
     top: 0;
     right: 0;
     z-index: 9;
+  }
+
+  #homeView {
+    position: absolute;
+    top: 44px;
+    bottom: 49px;
+    left: 0px;
+    right: 0px;
   }
 </style>
