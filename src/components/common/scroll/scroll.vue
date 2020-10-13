@@ -16,15 +16,20 @@ export default {
       scroll: {}
     }
   },
+  methods: {
+    scrollTo(x,y,time=300) {
+      this.scroll.scrollTo(x,y,time)
+    },
+    refresh() {
+      this.scroll.refresh()
+    }
+  },
   mounted() {
-    setTimeout(() => {
-      this.scroll = new BScroll(this.$refs.wrapper, {
-        probeType: 3
-      })
+    this.scroll = new BScroll(this.$refs.wrapper, {
+      probeType: 3
+    })
 
-      this.scroll.on("scroll",(position) => {
-        console.log(position);
-      },1000)
+    this.scroll.on("scroll",(position) => {
     })
   }
 }

@@ -1,13 +1,15 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">不拿钱就拿命购物站</div></nav-bar>
-    <scroll id="homeView">
+    <scroll ref="scroll" id="homeView">
       <home-swiper :banners="banners"></home-swiper>
       <home-recommend-view :recommend="recommends"></home-recommend-view>
       <feature-view></feature-view>
       <tab-control :titles="['流行','新款','精选']" @tabClick="tabClick"></tab-control>
       <goods-list :goods="showGoods"></goods-list>
     </scroll>
+
+    <back-top @backTopClick="backTopClick"></back-top>
   </div>
 </template>
 
@@ -16,6 +18,7 @@ import NavBar from 'components/common/navbar/NavBar';
 import Scroll from '@/components/common/scroll/scroll';
 import TabControl from "@/components/content/tabControl/TabControl";
 import GoodsList from "@/components/content/goods/GoodsList";
+import BackTop from "@/components/content/backTop/BackTop";
 
 import FeatureView from "@/views/home/ChildComps/FeatureView";
 import HomeSwiper from "@/views/home/ChildComps/HomeSwiper";
@@ -32,7 +35,8 @@ export default {
     FeatureView,
     HomeSwiper,
     HomeRecommendView,
-    GoodsList
+    GoodsList,
+    BackTop
   },
   data(){
     return {
@@ -56,11 +60,17 @@ export default {
     }
   },
   created() {
-    this.getHomeMultidata();
+    this.getHomeMultidata()
 
     this.getHomeGoods('pop')
     this.getHomeGoods('new')
     this.getHomeGoods('sell')
+  },
+  mounted() {
+    this.$bus.$on("imgFinishLoad", () => {
+      console.log(this.$refs.scroll.scroll);
+      this.$refs.scroll.refresh()
+    })
   },
   methods: {
     getHomeMultidata(){
@@ -84,6 +94,9 @@ export default {
         case 2:this.currentType = 'sell'
           break
       }
+    },
+    backTopClick() {
+      this.$refs.scroll.scrollTo(0,0,500)
     }
   },
   computed: {
