@@ -1,5 +1,5 @@
 <template>
-  <div ref="wrapper">
+  <div class="wrapper" ref="wrapper">
     <div class="content">
       <slot></slot>
     </div>
@@ -13,7 +13,7 @@ export default {
   name: "scroll",
   data() {
     return {
-      scroll: {}
+      scroll: null
     }
   },
   methods: {
@@ -22,14 +22,41 @@ export default {
     },
     refresh() {
       this.scroll.refresh()
+    },
+    finishPullUp() {
+      this.scroll.finishPullUp()
+    },
+    getScrollY() {
+      return this.scroll.y
+    }
+  },
+  props: {
+    click: {
+      type: Boolean,
+      default: true
+    },
+    probeType: {
+      type: Number,
+      default: 0
+    },
+    pullUpLoad: {
+      type: Boolean,
+      default: false
     }
   },
   mounted() {
     this.scroll = new BScroll(this.$refs.wrapper, {
-      probeType: 3
+      click:this.click,
+      probeType: this.probeType,
+      pullUpLoad: this.pullUpLoad
     })
 
     this.scroll.on("scroll",(position) => {
+      this.$emit('scroll',position)
+    })
+
+    this.scroll.on('pullingUp',() => {
+      this.$emit('pullingUp')
     })
   }
 }
