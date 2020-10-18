@@ -1,7 +1,7 @@
 <script src="../../../supermall-master/src/main.js"></script>
 <template>
   <div id="app">
-    <keep-alive>
+    <keep-alive exclude="Detail">
       <router-view></router-view>
     </keep-alive>
     <main-tab-bar></main-tab-bar>
