@@ -64,13 +64,16 @@ export default {
   padding-right: 1rem;
   white-space: nowrap;
 }
+
 .params_rule td {
   padding: 0.5rem;
 }
-
+.params_set {
+  width: 95%;
+}
 .params_set th {
   text-align: left;
-  padding: 0.5rem 3.5rem 0.5rem 0rem;
+  padding: 0.5rem;
   white-space: nowrap;
 }
 .params_set td {

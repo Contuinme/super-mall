@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="detail-nav-bar">
     <nav-bar>
       <div slot="left" id="back" @click="backClick">
         <img src="~assets/img/common/back.svg" alt="">
@@ -37,6 +37,10 @@ export default {
 </script>
 
 <style scoped>
+  #detail-nav-bar{
+    background-color: #fff;
+  }
+
   .title {
     display: flex;
     font-size: 14px;
