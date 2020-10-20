@@ -27,6 +27,8 @@ import Scroll from "@/components/common/scroll/scroll";
 import DetailCommentInfo from "@/views/detail/childComps/DetailCommentInfo";
 import {debounce} from "@/common/utils";
 
+import {itemLinstenerMixin} from "@/common/mixin";
+
 export default {
   name: "Detail",
   components: {
@@ -63,7 +65,8 @@ export default {
       detailInfo: {},
       paramInfo: {},
       commentInfo: {},
-      recommends: []
+      recommends: [],
+      itemImgListener: () => {}
     }
   },
   created() {
@@ -90,11 +93,11 @@ export default {
       })
     })
   },
+  mixins: [itemLinstenerMixin],
   mounted() {
-    const refresh = debounce(this.$refs.scrollComp.refresh,200)
-    this.$bus.$on("imgFinishLoad", () => {
-      refresh()
-    })
+  },
+  destroyed() {
+    this.$bus.$off('imgFinishLoad',this.itemImgListener)
   }
 }
 </script>

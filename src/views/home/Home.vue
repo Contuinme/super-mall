@@ -31,9 +31,9 @@ import FeatureView from "@/views/home/ChildComps/FeatureView";
 import HomeSwiper from "@/views/home/ChildComps/HomeSwiper";
 import HomeRecommendView from "@/views/home/ChildComps/HomeRecommendView";
 
-import {debounce} from "@/common/utils"
-
 import {getHomeMultidata,getHomeGoods} from "@/network/home";
+
+import {itemLinstenerMixin} from '@/common/mixin';
 
 export default {
   name: "Home",
@@ -69,7 +69,8 @@ export default {
       isShowBackTop: false,
       tabOffsetTop: 0,
       tabControlFixed: false,
-      saveY: 0
+      saveY: 0,
+      itemImgListener: () => {}
     }
   },
   created() {
@@ -79,11 +80,8 @@ export default {
     this.getHomeGoods('new')
     this.getHomeGoods('sell')
   },
+  mixins: [itemLinstenerMixin],
   mounted() {
-    const refresh = debounce(this.$refs.scrollComp.refresh,200)
-    this.$bus.$on("imgFinishLoad", () => {
-      refresh()
-    })
   },
   methods: {
     getHomeMultidata(){
@@ -136,6 +134,7 @@ export default {
   },
   deactivated() {
     this.saveY = this.$refs.scrollComp.getScrollY()
+    this.$bus.$off('imgFinishLoad',this.itemImgListener)
   }
 }
 </script>
