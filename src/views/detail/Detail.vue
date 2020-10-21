@@ -1,15 +1,17 @@
 <template>
   <div id="detail">
-    <detail-nav-bar id="detail-nav-bar"></detail-nav-bar>
-    <scroll ref="scrollComp" class="content">
+    <detail-nav-bar ref="nav" id="detail-nav-bar" @itemClick="itemClick"></detail-nav-bar>
+    <scroll ref="scrollComp" class="content" :probeType="3" @scroll="scrollListener">
       <detail-swiper :top-images="topImages"></detail-swiper>
       <detail-base-info :goods="goods"></detail-base-info>
       <detail-shop-info :shop="shop"></detail-shop-info>
       <detail-goods-info :detail-info="detailInfo" @loadImgEvent="loadImgEvent"></detail-goods-info>
-      <detail-params :param-info="paramInfo" id="detail-params"></detail-params>
-      <detail-comment-info :comment-info="commentInfo"></detail-comment-info>
-      <goods-list :goods="recommends" @imgFinishLoad="loadImgEvent"></goods-list>
+      <detail-params ref="param" :param-info="paramInfo" id="detail-params"></detail-params>
+      <detail-comment-info ref="comment" :comment-info="commentInfo"></detail-comment-info>
+      <goods-list ref="recommend" :goods="recommends" @imgFinishLoad="loadImgEvent"></goods-list>
     </scroll>
+    <detail-bottom-bar @addEvent="addToCart"></detail-bottom-bar>
+    <back-top @backTopClick="backTopClick" v-show="isShowBackTop"></back-top>
   </div>
 </template>
 
@@ -20,14 +22,15 @@ import DetailBaseInfo from "@/views/detail/childComps/DetailBaseInfo";
 import DetailShopInfo from "@/views/detail/childComps/DetailShopInfo";
 import DetailGoodsInfo from "@/views/detail/childComps/DetailGoodsInfo";
 import DetailParams from "@/views/detail/childComps/DetailParams";
+import DetailBottomBar from "@/views/detail/childComps/DetailBottomBar";
 import GoodsList from "@/components/content/goods/GoodsList";
 
 import {getDetail,Goods,Shop,GoodsParam,getRecommend} from "@/network/detail";
 import Scroll from "@/components/common/scroll/scroll";
 import DetailCommentInfo from "@/views/detail/childComps/DetailCommentInfo";
-import {debounce} from "@/common/utils";
 
-import {itemLinstenerMixin} from "@/common/mixin";
+import {itemLinstenerMixin,backTopMixin} from "@/common/mixin";
+import {debounce} from "@/common/utils";
 
 export default {
   name: "Detail",
@@ -39,6 +42,7 @@ export default {
     DetailBaseInfo,
     DetailSwiper,
     DetailNavBar,
+    DetailBottomBar,
     GoodsList,
     Scroll
   },
@@ -54,6 +58,28 @@ export default {
   methods: {
     loadImgEvent() {
       this.$refs.scrollComp.refresh()
+      this.getOffsetTop()
+    },
+    itemClick(index) {
+      this.$refs.scrollComp.scrollTo(0,-this.offsetTopArray[index],400)
+    },
+    scrollListener(position) {
+      for(let i = 0; i < this.offsetTopArray.length - 1; i++){
+        if((this.$refs.nav.currentIndex != i) && (-position.y >= this.offsetTopArray[i] && -position.y < this.offsetTopArray[i + 1])) {
+          this.$refs.nav.currentIndex = i
+        }
+      }
+      this.showBackTop(position)
+    },
+    addToCart() {
+      const product = {}
+      product.image = this.topImages[0]
+      product.title = this.goods.title
+      product.desc = this.goods.desc
+      product.price = this.goods.realPrice
+      product.iid = this.iid
+
+      this.$store.dispatch('ChangeCart',product)
     }
   },
   data() {
@@ -66,7 +92,9 @@ export default {
       paramInfo: {},
       commentInfo: {},
       recommends: [],
-      itemImgListener: () => {}
+      itemImgListener: () => {},
+      getOffsetTop: () => {},
+      offsetTopArray: []
     }
   },
   created() {
@@ -91,9 +119,18 @@ export default {
       getRecommend().then(res => {
         this.recommends = res.data.list
       })
+
+      this.getOffsetTop = debounce(() => {
+        this.offsetTopArray = []
+        this.offsetTopArray.push(0)
+        this.offsetTopArray.push(this.$refs.param.$el.offsetTop - 44)
+        this.offsetTopArray.push(this.$refs.comment.$el.offsetTop - 44)
+        this.offsetTopArray.push(this.$refs.recommend.$el.offsetTop - 44)
+        this.offsetTopArray.push(Number.MAX_VALUE)
+      },100)
     })
   },
-  mixins: [itemLinstenerMixin],
+  mixins: [itemLinstenerMixin,backTopMixin],
   mounted() {
   },
   destroyed() {
@@ -115,7 +152,7 @@ export default {
     z-index: 9;
   }
   .content {
-    height: calc(100% - 44px);
+    height: calc(100% - 44px - 2.09rem);
   }
   #detail-params {
     position: relative;

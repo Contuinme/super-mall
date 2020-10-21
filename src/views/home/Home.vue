@@ -25,7 +25,6 @@ import NavBar from 'components/common/navbar/NavBar';
 import Scroll from '@/components/common/scroll/scroll';
 import TabControl from "@/components/content/tabControl/TabControl";
 import GoodsList from "@/components/content/goods/GoodsList";
-import BackTop from "@/components/content/backTop/BackTop";
 
 import FeatureView from "@/views/home/ChildComps/FeatureView";
 import HomeSwiper from "@/views/home/ChildComps/HomeSwiper";
@@ -33,7 +32,7 @@ import HomeRecommendView from "@/views/home/ChildComps/HomeRecommendView";
 
 import {getHomeMultidata,getHomeGoods} from "@/network/home";
 
-import {itemLinstenerMixin} from '@/common/mixin';
+import {itemLinstenerMixin,backTopMixin} from '@/common/mixin';
 
 export default {
   name: "Home",
@@ -44,8 +43,7 @@ export default {
     FeatureView,
     HomeSwiper,
     HomeRecommendView,
-    GoodsList,
-    BackTop
+    GoodsList
   },
   data(){
     return {
@@ -66,7 +64,6 @@ export default {
         }
       },
       currentType: 'pop',
-      isShowBackTop: false,
       tabOffsetTop: 0,
       tabControlFixed: false,
       saveY: 0,
@@ -80,7 +77,7 @@ export default {
     this.getHomeGoods('new')
     this.getHomeGoods('sell')
   },
-  mixins: [itemLinstenerMixin],
+  mixins: [itemLinstenerMixin,backTopMixin],
   mounted() {
   },
   methods: {
@@ -108,11 +105,8 @@ export default {
       this.$refs.tabControl1.currentIndex = index
       this.$refs.tabControl2.currentIndex = index
     },
-    backTopClick() {
-      this.$refs.scrollComp.scrollTo(0,0,500)
-    },
     scroll(position) {
-      this.isShowBackTop = (-position.y) > 1000
+      this.showBackTop(position)
       this.tabControlFixed = (-position.y) > this.tabOffsetTop
     },
     loadMore() {
