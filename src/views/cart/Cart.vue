@@ -1,13 +1,24 @@
 <template>
-  <h1>购物车</h1>
+  <div id="cart">
+    <cart-nav-bar></cart-nav-bar>
+    <cart-list></cart-list>
+  </div>
 </template>
 
 <script>
+import CartNavBar from "@/views/cart/childComps/CartNavBar";
+import CartList from "@/views/cart/childComps/CartList";
 export default {
-  name: "Cart"
+  name: "Cart",
+  components: {
+    CartNavBar,
+    CartList
+  }
 }
 </script>
 
 <style scoped>
-
+  #cart {
+    height: 100vh;
+  }
 </style>

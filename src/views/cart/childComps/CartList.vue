@@ -1,0 +1,38 @@
+<template>
+  <div id="cart-list">
+    <scroll ref="scrollComp" id="content">
+      <cart-list-item v-for="(item,index) in cartList" :item="item" :key="index"></cart-list-item>
+    </scroll>
+  </div>
+</template>
+
+<script>
+import {mapGetters} from "vuex";
+import Scroll from "@/components/common/scroll/scroll";
+import CartListItem from "@/views/cart/childComps/CartListItem";
+
+export default {
+name: "CartList",
+  components: {
+    Scroll,
+    CartListItem
+  },
+  computed: {
+    ...mapGetters(['cartList'])
+  },
+  activated() {
+    this.$refs.scrollComp.refresh()
+  }
+}
+</script>
+
+<style scoped>
+  #cart-list {
+    height: calc(100% - 44px - 49px);
+  }
+
+  #content {
+    height: 100%;
+    overflow: hidden;
+  }
+</style>
